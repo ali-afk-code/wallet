@@ -6,7 +6,9 @@ import (
 	"github.com/ali-afk-code/wallet/pkg/types"
 )
 
-var ErrorAccNotFound = errors.New("account not found")
+var ErrAccountNotFound = errors.New("account not found")
+var ErrAmountMustBePositive = errors.New("ammount must be positive")
+var ErrPhoneRegistered = errors.New("phone already registered")
 
 type Service struct {
 	nextAccountId int64
@@ -20,7 +22,7 @@ func (s *Service) FindAccountByID(accountID int64) (*types.Account, error) {
 			return account, nil
 		}
 	}
-	return nil, ErrorAccNotFound
+	return nil, ErrAccountNotFound
 }
 func (s *Service) Pay() {
 
@@ -28,7 +30,7 @@ func (s *Service) Pay() {
 func (s *Service) RegisterAccount(phone types.Phone) (*types.Account, error) {
 	for _, account := range s.accounts {
 		if account.Phone == phone {
-			return nil, errors.New("account already existed")
+			return nil, ErrPhoneRegistered
 		}
 	}
 	s.nextAccountId++
@@ -42,7 +44,7 @@ func (s *Service) RegisterAccount(phone types.Phone) (*types.Account, error) {
 
 func (s *Service) Deposit(accountID int64, amount types.Money) error {
 	if amount <= 0 {
-		return errors.New("amount less than 0")
+		return ErrAmountMustBePositive
 	}
 	var acc *types.Account
 
@@ -52,7 +54,7 @@ func (s *Service) Deposit(accountID int64, amount types.Money) error {
 		}
 	}
 	if acc == nil {
-		return errors.New("error acc not found")
+		return ErrAccountNotFound
 	}
 	acc.Balance += amount
 	return nil

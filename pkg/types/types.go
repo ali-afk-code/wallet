@@ -1,5 +1,7 @@
 package types
 
+import "github.com/google/uuid"
+
 type Money int64
 type Phone string
 type Account struct {
@@ -9,4 +11,5 @@ type Account struct {
 }
 
 type Payment struct {
+	PaymentID uuid.UUID
 }

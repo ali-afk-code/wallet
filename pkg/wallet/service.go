@@ -22,7 +22,9 @@ func (s *Service) FindAccountById(accountID int64) (*types.Account, error) {
 	}
 	return nil, ErrorAccNotFound
 }
+func (s *Service) Pay() {
 
+}
 func (s *Service) RegisterAccount(phone types.Phone) (*types.Account, error) {
 	for _, account := range s.accounts {
 		if account.Phone == phone {

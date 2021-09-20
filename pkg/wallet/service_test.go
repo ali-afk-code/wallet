@@ -25,3 +25,10 @@ func TestService_FindAccountByID_failure(t *testing.T) { //how to test failure
 		t.Errorf("%v", err)
 	}
 }
+
+func TestService_Reject_success(t *testing.T) {
+
+}
+func TestService_Reject_fail(t *testing.T) {
+
+}

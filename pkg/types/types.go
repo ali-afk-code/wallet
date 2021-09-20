@@ -1,9 +1,9 @@
 package types
 
-import "github.com/google/uuid"
-
 type Money int64
 type Phone string
+type PaymentCategory string
+type PaymentStatus string
 type Account struct {
 	ID      int64
 	Phone   Phone
@@ -11,7 +11,16 @@ type Account struct {
 }
 
 type Payment struct {
-	PaymentID uuid.UUID
+	ID        string
+	AccountID int64
+	Amount    Money
+	Category  PaymentCategory
+	Status    PaymentStatus
 }
 
 //
+const (
+	PaymentStatusOk         PaymentStatus = "OK"
+	PaymentStatusFail       PaymentStatus = "FAIL"
+	PaymentStatusInProgress PaymentStatus = "INPROGRESS"
+)

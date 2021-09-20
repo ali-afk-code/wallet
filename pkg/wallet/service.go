@@ -14,7 +14,7 @@ type Service struct {
 	// payments      []*types.Payment
 }
 
-func (s *Service) FindAccountById(accountID int64) (*types.Account, error) {
+func (s *Service) FindAccountByID(accountID int64) (*types.Account, error) {
 	for _, account := range s.accounts {
 		if account.ID == accountID {
 			return account, nil

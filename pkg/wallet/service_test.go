@@ -4,11 +4,11 @@ import (
 	"testing"
 )
 
-func TestService_FindAccountById_success(t *testing.T) {
+func TestService_FindAccountByID_success(t *testing.T) {
 	svc := &Service{}
 	svc.RegisterAccount("+998906657700")
 	svc.RegisterAccount("+998906650077")
-	acc, err := svc.FindAccountById(2)
+	acc, err := svc.FindAccountByID(2)
 	if err != nil {
 		t.Errorf("%v", err)
 	}
@@ -16,11 +16,11 @@ func TestService_FindAccountById_success(t *testing.T) {
 		t.Error("func working incorrectly")
 	}
 }
-func TestService_FindAccountById_failure(t *testing.T) { //how to test failure
+func TestService_FindAccountByID_failure(t *testing.T) { //how to test failure
 	svc := &Service{}
 	svc.RegisterAccount("+998906657700")
 	svc.RegisterAccount("+998906650077")
-	_, err := svc.FindAccountById(3)
+	_, err := svc.FindAccountByID(3)
 	if err == nil {
 		t.Errorf("%v", err)
 	}

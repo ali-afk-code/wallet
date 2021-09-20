@@ -39,3 +39,21 @@ func (s *Service) RegisterAccount(phone types.Phone) (*types.Account, error) {
 	s.accounts = append(s.accounts, acc)
 	return acc, nil
 }
+
+func (s *Service) Deposit(accountID int64, amount types.Money) error {
+	if amount <= 0 {
+		return errors.New("amount less than 0")
+	}
+	var acc *types.Account
+
+	for _, account := range s.accounts {
+		if accountID == account.ID {
+			acc = account
+		}
+	}
+	if acc == nil {
+		return errors.New("error acc not found")
+	}
+	acc.Balance += amount
+	return nil
+}

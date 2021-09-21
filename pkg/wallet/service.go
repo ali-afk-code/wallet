@@ -12,11 +12,13 @@ var ErrAmountMustBePositive = errors.New("ammount must be positive")
 var ErrPhoneRegistered = errors.New("phone already registered")
 var ErrNotEnoughBalance = errors.New("not enough balance")
 var ErrPaymentNotFound = errors.New("not found payment with thi id")
+var ErrFavoriteNotFound = errors.New("favorite not found")
 
 type Service struct {
 	nextAccountId int64
 	accounts      []*types.Account
 	payments      []*types.Payment
+	favorites     []*types.Favorite
 }
 
 func (s *Service) FindAccountByID(accountID int64) (*types.Account, error) {
@@ -124,17 +126,52 @@ func (s *Service) Repeat(paymentID string) (*types.Payment, error) {
 	if err != nil {
 		return nil, err
 	}
-	paymentCopy := types.Payment{
-		ID:        uuid.NewString(),
-		AccountID: payment.AccountID,
-		Amount:    payment.Amount,
-		Category:  payment.Category,
-		Status:    payment.Status,
-	}
-	acc, err := s.FindAccountByID(payment.AccountID)
+	paymentNew, err := s.Pay(payment.AccountID, payment.Amount, payment.Category)
 	if err != nil {
 		return nil, err
 	}
-	acc.Balance -= payment.Amount
-	return &paymentCopy, nil
+	return paymentNew, nil
+}
+
+func (s *Service) FavoritePayment(paymentID string, name string) (*types.Favorite, error) {
+
+	payment, err := s.FindPaymentByID(paymentID)
+	if err != nil {
+		return nil, err
+	}
+
+	favoriteID := uuid.New().String()
+	favorite := &types.Favorite{
+		ID:        favoriteID,
+		AccountID: payment.AccountID,
+		Name:      name,
+		Amount:    payment.Amount,
+		Category:  payment.Category,
+	}
+
+	s.favorites = append(s.favorites, favorite)
+
+	return favorite, nil
+}
+
+//PayFromFavorite method
+func (s *Service) PayFromFavorite(favoriteID string) (*types.Payment, error) {
+
+	var favorite *types.Favorite
+	for _, v := range s.favorites {
+		if v.ID == favoriteID {
+			favorite = v
+			break
+		}
+	}
+	if favorite == nil {
+		return nil, ErrFavoriteNotFound
+	}
+
+	payment, err := s.Pay(favorite.AccountID, favorite.Amount, favorite.Category)
+
+	if err != nil {
+		return nil, err
+	}
+	return payment, nil
 }

@@ -110,13 +110,31 @@ func (s *Service) Reject(paymentID string) error {
 }
 
 func (s *Service) FindPaymentByID(paymentID string) (*types.Payment, error) {
-	var paymentCopy *types.Payment
 	for _, payment := range s.payments {
 		if payment.ID == paymentID {
-			paymentCopy = payment
-			return paymentCopy, nil
+			return payment, nil
 		}
 	}
 	return nil, ErrPaymentNotFound
 
+}
+
+func (s *Service) Repeat(paymentID string) (*types.Payment, error) {
+	payment, err := s.FindPaymentByID(paymentID)
+	if err != nil {
+		return nil, err
+	}
+	paymentCopy := types.Payment{
+		ID:        uuid.NewString(),
+		AccountID: payment.AccountID,
+		Amount:    payment.Amount,
+		Category:  payment.Category,
+		Status:    payment.Status,
+	}
+	acc, err := s.FindAccountByID(payment.AccountID)
+	if err != nil {
+		return nil, err
+	}
+	acc.Balance -= payment.Amount
+	return &paymentCopy, nil
 }
